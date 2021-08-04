@@ -43,19 +43,6 @@ class TestCase:
         assert len(u.show_fields()) > 0
 
     def test_shadow(self):
-        """Class methods are similar to regular functions.
-
-        Note:
-            Do not include the `self` parameter in the ``Args`` section.
-
-        Args:
-            param1: The first parameter.
-            param2: The second parameter.
-
-        Returns:
-            True if successful, False otherwise.
-
-        """
         u = User.new()
         assert u.check_state()[0] == 'CLEAN'
         u().first_name = 'asdasdasd'
