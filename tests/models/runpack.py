@@ -1,4 +1,5 @@
-from tinyorm import Model
+from backyard import Model
+
 
 class Runpack(Model):
     __tablename__ = 'runpacks'

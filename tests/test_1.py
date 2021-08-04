@@ -1,7 +1,7 @@
 #import unittest
 from .models import User, Workflow, Runpack, PendingStep, Garbage
-from tinyorm import Model
-from tinyorm import Env
+from backyard import Model
+from backyard import Env
 from dotenv import dotenv_values
 import pytest
 

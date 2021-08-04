@@ -1,4 +1,5 @@
-from tinyorm import Model
+from backyard import Model
+
 
 class Garbage(Model):
     __tablename__ = 'garbage'

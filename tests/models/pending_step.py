@@ -1,4 +1,5 @@
-from tinyorm import Model
+from backyard import Model
+
 
 class PendingStep(Model):
     __tablename__ = 'rp_steps_pending'

@@ -1,10 +1,10 @@
-# tiny ORM
+# Backyard
 
 # Example Usage:
 ~~~python
 from models import User, Workflow, Runpack
-from tinyorm import Model
-from tinyorm import Env
+from backyard import Model
+from backyard import Env
 from dotenv import dotenv_values
 
 config = dotenv_values(".env")
