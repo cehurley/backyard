@@ -1,20 +1,33 @@
 #import unittest
-from .models import User, Workflow, Runpack, PendingStep, Garbage
+from .models import User, Garbage
 from backyard import Model
 from backyard import Env
 from dotenv import dotenv_values
+from .pretest import usertable, garbagetable, teardown, userdata
 import pytest
 
 config = dotenv_values(".env")
 env = Env(config)
 
-for m in (User, Workflow, Runpack, PendingStep, Garbage):
+for m in (User, Garbage):
     m.bind(env)
 
 
+def setup_module():
+    sql = usertable
+    env._test_func(sql)
+    sql = garbagetable
+    env._test_func(sql)
+    for r in userdata:
+        env._test_func(r)
+
+
+def teardown_module():
+    for i in teardown:
+        env._test_func(i)
+
+
 class TestCase:
-    def setUp(self):
-        pass
 
     def test_user_read(self):
         u = User.get().fields(['id', 'first_name', 'uid']

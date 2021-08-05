@@ -66,6 +66,10 @@ class Env(object):
         self.cursor.execute(sql)
         self.conn.commit()
 
+    def _test_func(self, sql):
+        self.cursor.execute(sql)
+        self.conn.commit()
+
 
 class EntityData(object):
     pass
