@@ -1,11 +1,8 @@
-#import unittest
 from .models import User, Garbage
-from backyard import Model
 from backyard import Env
 from dotenv import dotenv_values
 from .pretest import usertable, garbagetable, teardown
 from .pretest import userdata, garbagedata
-import pytest
 import json
 
 config = dotenv_values(".env")
@@ -50,7 +47,6 @@ class TestCase:
     def test_load_related_data(self):
         u = User.find(1).load('garbages')
         q = u.json()
-        #print(q)
         assert 'garbages' in q
         q = json.loads(q)
         assert len(q['garbages']) > 0
@@ -66,13 +62,13 @@ class TestCase:
     def test_create(self):
         g = Garbage.new()
         g().scoops = 10
-        g().boops = 'xlxlxlxlxlxlxlxlxlxlxlxlxlxl'
+        g().boops = 'xlxlxlxlxlxlxlxlxlxl'
         g.save()
         assert g().id > 0
 
     def test_delete(self):
-        Garbage.delete(where=" boops = 'xlxlxlxlxlxlxlxlxlxlxlxlxlxl' ")
-        g = Garbage.get().where(" boops = 'xlxlxlxlxlxlxlxlxlxlxlxlxlxl' ").all()
+        Garbage.delete(where=" boops = 'xlxlxlxlxlxlxlxlxlxl' ")
+        g = Garbage.get().where(" boops = 'xlxlxlxlxlxlxlxlxlxl' ").all()
         assert len(g) == 0
 
     def test_show_fields(self):
@@ -84,7 +80,7 @@ class TestCase:
         assert u.check_state()[0] == 'CLEAN'
         u().first_name = 'asdasdasd'
         assert 'first_name' in u.check_state()[1].keys()
-        assert u.dump_shadow()['first_name'] == None
+        assert u.dump_shadow()['first_name'] is None
 
     def test_state_dirty(self):
         u = User.new()

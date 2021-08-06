@@ -15,13 +15,12 @@ for (_, module_name, _) in iter_modules([package_dir]):
         attribute = getattr(module, attribute_name)
 
         if isclass(attribute):
-             # Add the class to this package's variables
-             globals()[attribute_name] = attribute
-             cnames.append(attribute)
-        #if issubclass(attribute, PluginBase):
-        #    globals()[attribute_name] = attribute
+            # Add the class to this package's variables
+            globals()[attribute_name] = attribute
+            cnames.append(attribute)
 
-for c in cnames: #[Workflow, User]:
+
+for c in cnames:  # [Workflow, User]:
     if hasattr(c, 'blelongs_to'):
         for b in c.belongs_to:
             c.belongs_to[b]['class'] = eval(c.belongs_to[b]['class'])
