@@ -8,8 +8,8 @@ class Registry(object):
 
 class Env(object):
     def __init__(self, config):
-        print(config.keys())
-        print('figs: '+str(config))
+        #print(config.keys())
+        #print('figs: '+str(config))
         self.conn = pymysql.connect(host=config['HOST'],
                                     port=int(config['PORT']),
                                     user=config['USER'],
@@ -150,8 +150,8 @@ class ResultSet(object):
     def load(self, m):
         for q in self.results:
             if m in q.has_many:
-                print('in has many for:' + m)
-                print(q.has_many[m])
+                #print('in has many for:' + m)
+                #print(q.has_many[m])
                 model = q.has_many[m]['class']
                 fk = q.has_many[m]['fk']
                 id = getattr(q(), q.__primary_key__)
@@ -391,7 +391,7 @@ class Model(object):
                 msg = 'Record Saved'
             else:
                 j = self._create_query_builder(self.__tablename__, x[1])
-                print(j)
+                #print(j)
                 x = self.env.insert(j[0], j[1])
                 if x:
                     setattr(self.__entity_data__, self.__primary_key__, x)

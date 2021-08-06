@@ -3,8 +3,10 @@ from .models import User, Garbage
 from backyard import Model
 from backyard import Env
 from dotenv import dotenv_values
-from .pretest import usertable, garbagetable, teardown, userdata
+from .pretest import usertable, garbagetable, teardown
+from .pretest import userdata, garbagedata
 import pytest
+import json
 
 config = dotenv_values(".env")
 env = Env(config)
@@ -12,14 +14,20 @@ env = Env(config)
 for m in (User, Garbage):
     m.bind(env)
 
+print('installing test data')
+
 
 def setup_module():
+    for i in teardown:
+        env._test_func(i)
     sql = usertable
     env._test_func(sql)
     sql = garbagetable
     env._test_func(sql)
     for r in userdata:
         env._test_func(r)
+    for j in garbagedata:
+        env._test_func(j)
 
 
 def teardown_module():
@@ -38,6 +46,22 @@ class TestCase:
         u = User.find(2)
         u().first_name = 'sadasdasd'
         assert u().first_name == 'sadasdasd'
+
+    def test_load_related_data(self):
+        u = User.find(1).load('garbages')
+        q = u.json()
+        #print(q)
+        assert 'garbages' in q
+        q = json.loads(q)
+        assert len(q['garbages']) > 0
+
+    def test_update_related_object(self):
+        u = User.find(1).load('garbages')
+        for g in u().garbages:
+            g().scoops = 99
+            g.save()
+        j = Garbage.get().where(" scoops = 99  ").all()
+        assert len(j) > 0
 
     def test_create(self):
         g = Garbage.new()

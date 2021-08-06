@@ -47,11 +47,19 @@ CREATE TABLE `garbage_1111` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `scoops` int(11) DEFAULT NULL,
   `boops` varchar(50) DEFAULT NULL,
+  `user_id` int(11) default null,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=143 DEFAULT CHARSET=utf8mb3;
 """
 
+garbagedata = [
+    "insert into garbage_1111 (scoops, boops, user_id) \
+                values (44, 'jjjkkkkkkkkkkkk', 1);",
+    "insert into garbage_1111 (scoops, boops, user_id) \
+                values (88, 'dfsdfdfsdfsdfsdf', 1);",
+]
+
 teardown = [
-    "drop table garbage_1111;",
-    "drop table users_1111;"
+    "drop table if exists garbage_1111;",
+    "drop table if exists users_1111;"
 ]
