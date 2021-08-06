@@ -150,8 +150,6 @@ class ResultSet(object):
     def load(self, m):
         for q in self.results:
             if m in q.has_many:
-                #print('in has many for:' + m)
-                #print(q.has_many[m])
                 model = q.has_many[m]['class']
                 fk = q.has_many[m]['fk']
                 id = getattr(q(), q.__primary_key__)
@@ -196,7 +194,6 @@ class Model(object):
     def run_query_builder(cls, qb):
         rs = ResultSet(cls.__name__, cls.__tablename__, cls)
         sql = qb.query
-        #print(sql)
         results = cls.env.execute(sql)
         for g in results:
             r = cls()
