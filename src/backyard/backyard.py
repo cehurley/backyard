@@ -1,5 +1,9 @@
 import pymysql
 import json
+from .hbtm import HBTMQueryBuilder
+from .exceptions import TooManyLimitClauses
+from .exceptions import TooManyWhereClauses
+from .exceptions import TooManyOrderByClauses
 
 
 class Registry(object):
@@ -8,8 +12,6 @@ class Registry(object):
 
 class Env(object):
     def __init__(self, config):
-        #print(config.keys())
-        #print('figs: '+str(config))
         self.conn = pymysql.connect(host=config['HOST'],
                                     port=int(config['PORT']),
                                     user=config['USER'],
@@ -21,7 +23,6 @@ class Env(object):
 
     def execute(self, sql, data={}):
         self.cursor.execute(sql, data)
-        #row_headers=[x[0] for x in self.cursor.description] #this will extract row headers
         rv = self.cursor.fetchall()
         return rv
 
@@ -70,6 +71,16 @@ class Env(object):
         self.cursor.execute(sql)
         self.conn.commit()
 
+    def hbtm(self, tablename, joiner, pk,  pk_val):
+        sql = """
+                select g.* from `{0}` g
+                where g.id in (select {1} from {2}
+                where truck_id = {pk_val});
+                """.format(tablename, pk, joiner, pk_val)
+        self.cursor.execute(sql)
+        rv = self.cursor.fetchall()
+        return rv
+
 
 class EntityData(object):
     pass
@@ -116,8 +127,7 @@ class QueryBuilder(object):
         if isinstance(condition, (list, tuple)):
             condition = ','.join(condition)
         else:
-            pass
-            #condition = str(condition)
+            condition = str(condition)
         self.limit_s += " %s " % str(condition)
         self.limit_count += 1
         return self.all()
@@ -188,6 +198,17 @@ class Model(object):
     def get(cls):
         qb = QueryBuilder(cls.run_query_builder)
         qb.tablename = cls.__tablename__
+        return qb
+
+    @classmethod
+    def get_hbtm(cls, joiner=None, fk=None, target_fk=None, fk_val=None):
+        qb = HBTMQueryBuilder(cls.run_query_builder)
+        qb.tablename = cls.__tablename__
+        qb.pk = cls.__primary_key__
+        qb.joiner = joiner
+        qb.fk = fk
+        qb.target_fk = target_fk
+        qb.fk_val = fk_val
         return qb
 
     @classmethod
@@ -262,15 +283,30 @@ class Model(object):
         else:
             return []
 
-    def load(self, m):
-        if m in self.has_many:
-            model = self.has_many[m]['class']
-            fk = self.has_many[m]['fk']
-            id = getattr(self.__entity_data__, self.__primary_key__)
-            r = model.get().where(fk+" = "+str(id)).all()
-            self.set_entity_data(m, r)
-            if m not in self.loaded_rels:
-                self.loaded_rels.append(m)
+    def load(self, m, conditions=None):
+        if hasattr(self, 'has_many'):
+            if m in self.has_many:
+                model = self.has_many[m]['class']
+                fk = self.has_many[m]['fk']
+                id = getattr(self.__entity_data__, self.__primary_key__)
+                r = model.get().where(fk+" = "+str(id)).all()
+                self.set_entity_data(m, r)
+                if m not in self.loaded_rels:
+                    self.loaded_rels.append(m)
+        if hasattr(self, 'has_and_belongs_to_many'):
+            if m in self.has_and_belongs_to_many:
+                model = self.has_and_belongs_to_many[m]['class']
+                fk = self.has_and_belongs_to_many[m]['fk']
+                id = getattr(self.__entity_data__, self.__primary_key__)
+                joiner = self.has_and_belongs_to_many[m]['through']
+                target_fk = self.has_and_belongs_to_many[m]['target_fk']
+                r = model.get_hbtm(joiner=joiner,
+                                   fk=fk,
+                                   target_fk=target_fk,
+                                   fk_val=id).where(conditions).all()
+                self.set_entity_data(m, r)
+                if m not in self.loaded_rels:
+                    self.loaded_rels.append(m)
         return self
 
     def check_state(self):
@@ -443,15 +479,3 @@ class Model(object):
         v = ','.join(vals)
         sql2 = sql % (tablename, f, v)
         return [sql2, vals2]
-
-
-class TooManyWhereClauses(Exception):
-    pass
-
-
-class TooManyOrderByClauses(Exception):
-    pass
-
-
-class TooManyLimitClauses(Exception):
-    pass

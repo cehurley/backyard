@@ -1,5 +1,4 @@
 from inspect import isclass
-#from inspect import issubclass
 from pkgutil import iter_modules
 from pathlib import Path
 from importlib import import_module
@@ -21,9 +20,13 @@ for (_, module_name, _) in iter_modules([package_dir]):
 
 
 for c in cnames:  # [Workflow, User]:
-    if hasattr(c, 'blelongs_to'):
+    if hasattr(c, 'belongs_to'):
         for b in c.belongs_to:
             c.belongs_to[b]['class'] = eval(c.belongs_to[b]['class'])
+    if hasattr(c, 'has_and_belongs_to_many'):
+        for h in c.has_and_belongs_to_many:
+            c.has_and_belongs_to_many[h]['class'] = eval(
+                c.has_and_belongs_to_many[h]['class'])
     if hasattr(c, 'has_many'):
         for h in c.has_many:
             c.has_many[h]['class'] = eval(c.has_many[h]['class'])

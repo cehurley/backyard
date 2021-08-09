@@ -59,7 +59,39 @@ garbagedata = [
                 values (88, 'dfsdfdfsdfsdfsdf', 1);",
 ]
 
+garbagetruckstable = """
+CREATE TABLE `garbage_trucks_1111` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `garbage_id` int(11) DEFAULT NULL,
+  `truck_id` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=143 DEFAULT CHARSET=utf8mb3;
+"""
+truckstable = """
+CREATE TABLE `trucks_1111` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `truck_name` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=143 DEFAULT CHARSET=utf8mb3;
+"""
+
+garbagetrucksdata = [
+    "insert into garbage_trucks_1111 (garbage_id, truck_id) \
+                values (143, 143);",
+    "insert into garbage_trucks_1111 (garbage_id, truck_id) \
+                values (144, 143);"
+]
+
+trucksdata = [
+    "insert into trucks_1111 (truck_name) \
+                values ('big mac');",
+    "insert into trucks_1111 (truck_name) \
+                values ('little jack');"
+]
+
 teardown = [
     "drop table if exists garbage_1111;",
-    "drop table if exists users_1111;"
+    "drop table if exists users_1111;",
+    "drop table if exists garbage_trucks_1111;",
+    "drop table if exists trucks_1111;",
 ]
