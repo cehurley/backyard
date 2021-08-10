@@ -70,6 +70,10 @@ class Env(object):
     def _test_func(self, sql):
         self.cursor.execute(sql)
         self.conn.commit()
+        return 1
+
+    def close(self):
+        self.conn.close()
 
     def hbtm(self, tablename, joiner, pk,  pk_val):
         sql = """

@@ -90,8 +90,8 @@ trucksdata = [
 ]
 
 teardown = [
-    "drop table if exists garbage_1111;",
     "drop table if exists users_1111;",
     "drop table if exists garbage_trucks_1111;",
     "drop table if exists trucks_1111;",
+    "drop table if exists garbage_1111;"
 ]

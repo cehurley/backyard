@@ -1,10 +1,6 @@
 from .models import User, Garbage, Truck
 from backyard import Env
 from dotenv import dotenv_values
-from .pretest import usertable, garbagetable, teardown
-from .pretest import userdata, garbagedata
-from .pretest import garbagetruckstable, truckstable
-from .pretest import garbagetrucksdata, trucksdata
 import json
 
 config = dotenv_values(".env")
@@ -12,35 +8,6 @@ env = Env(config)
 
 for m in (User, Garbage, Truck):
     m.bind(env)
-
-print('installing test data')
-
-
-def setup_module():
-    for i in teardown:
-        env._test_func(i)
-    sql = usertable
-    env._test_func(sql)
-    sql = garbagetable
-    env._test_func(sql)
-    sql = garbagetruckstable
-    env._test_func(sql)
-    sql = truckstable
-    env._test_func(sql)
-    for r in userdata:
-        env._test_func(r)
-    for j in garbagedata:
-        env._test_func(j)
-    for j in garbagetrucksdata:
-        env._test_func(j)
-    for j in trucksdata:
-        env._test_func(j)
-
-
-def teardown_module():
-    for i in teardown:
-        #env._test_func(i)
-        pass
 
 
 class TestCase:
