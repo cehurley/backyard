@@ -292,20 +292,21 @@ class Model(object):
             if m in self.has_many:
                 model = self.has_many[m]['class']
                 fk = self.has_many[m]['fk']
-                id = getattr(self.__entity_data__, self.__primary_key__)
+                id = getattr(self.__entity_data__,
+                             self.__primary_key__)
                 r = model.get().where(fk+" = "+str(id)).all()
                 self.set_entity_data(m, r)
                 if m not in self.loaded_rels:
                     self.loaded_rels.append(m)
-        if hasattr(self, 'has_and_belongs_to_many'):
-            if m in self.has_and_belongs_to_many:
-                model = self.has_and_belongs_to_many[m]['class']
-                fk = self.has_and_belongs_to_many[m]['fk']
-                id = getattr(self.__entity_data__, self.__primary_key__)
-                joiner = self.has_and_belongs_to_many[m]['through']
-                target_fk = self.has_and_belongs_to_many[m]['target_fk']
-                r = model.get_hbtm(joiner=joiner,
-                                   fk=fk,
+        if hasattr(self, 'hbtm'):
+            if m in self.hbtm:
+                model = self.hbtm[m]['class']
+                fk = self.hbtm[m]['fk']
+                id = getattr(self.__entity_data__,
+                             self.__primary_key__)
+                joiner = self.hbtm[m]['through']
+                target_fk = self.hbtm[m]['target_fk']
+                r = model.get_hbtm(joiner=joiner, fk=fk,
                                    target_fk=target_fk,
                                    fk_val=id).where(conditions).all()
                 self.set_entity_data(m, r)
@@ -353,7 +354,9 @@ class Model(object):
         for k in self.__fields__:
             self.__shadow__[k] = getattr(self.__entity_data__, k)
         if pri:
-            setattr(self.__entity_data__, self.__primary_key__, pri)
+            setattr(self.__entity_data__,
+                    self.__primary_key__,
+                    pri)
 
     def dump_shadow(self):
         return self.__shadow__
@@ -415,7 +418,8 @@ class Model(object):
 
     def save(self):
         x = self.check_state()
-        id_set = getattr(self.__entity_data__, self.__primary_key__)
+        id_set = getattr(self.__entity_data__,
+                         self.__primary_key__)
         if x[0] == 'DIRTY':
             if id_set:
                 j = self._update_query_builder(self.__tablename__,
@@ -428,10 +432,10 @@ class Model(object):
                 msg = 'Record Saved'
             else:
                 j = self._create_query_builder(self.__tablename__, x[1])
-                #print(j)
                 x = self.env.insert(j[0], j[1])
                 if x:
-                    setattr(self.__entity_data__, self.__primary_key__, x)
+                    setattr(self.__entity_data__,
+                            self.__primary_key__, x)
                     self.reset_shadow()
                 msg = 'Record Saved with ID: %s' % str(x)
                 return msg
@@ -440,7 +444,8 @@ class Model(object):
         return msg
 
     @staticmethod
-    def _update_query_builder(tablename, where_field, where_val, update_vals={}):
+    def _update_query_builder(tablename, where_field, where_val,
+                              update_vals={}):
         params = []
         sql = """UPDATE %s SET """ % tablename
         st = """ = %s """
@@ -462,6 +467,10 @@ class Model(object):
 
     @staticmethod
     def _delete_query_builder(tablename, where=' 2 = 1 '):
+        '''
+        Leave the funky where clause in here!
+        It's to force a condition on deletes.
+        '''
         params = []
         sql = """ delete from %s where %s; """
         sql2 = sql % (tablename, where)
@@ -469,7 +478,6 @@ class Model(object):
 
     @staticmethod
     def _create_query_builder(tablename, create_vals={}):
-        params = []
         sql = """ INSERT INTO %s (%s) VALUES (%s); """
         fh = []
         for i in create_vals:

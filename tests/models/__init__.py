@@ -23,10 +23,10 @@ for c in cnames:  # [Workflow, User]:
     if hasattr(c, 'belongs_to'):
         for b in c.belongs_to:
             c.belongs_to[b]['class'] = eval(c.belongs_to[b]['class'])
-    if hasattr(c, 'has_and_belongs_to_many'):
-        for h in c.has_and_belongs_to_many:
-            c.has_and_belongs_to_many[h]['class'] = eval(
-                c.has_and_belongs_to_many[h]['class'])
+    if hasattr(c, 'hbtm'):
+        for h in c.hbtm:
+            c.hbtm[h]['class'] = eval(
+                c.hbtm[h]['class'])
     if hasattr(c, 'has_many'):
         for h in c.has_many:
             c.has_many[h]['class'] = eval(c.has_many[h]['class'])
