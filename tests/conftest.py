@@ -39,7 +39,6 @@ def pytest_sessionstart(session):
 
 
 def pytest_sessionfinish(session, exitstatus):
-    '''
     env.close()
     from .pretest import teardown
     conn = pymysql.connect(host=config['HOST'],
@@ -52,8 +51,6 @@ def pytest_sessionfinish(session, exitstatus):
 
     for i in teardown:
         print(i)
-        cursor.execute(i)
-    conn.commit()
+        #cursor.execute(i)
+    #conn.commit()
     conn.close()
-    '''
-    pass

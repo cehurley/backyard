@@ -30,6 +30,18 @@ class TestCase:
             j.load('trucks')
         assert len(t().garbages) == 1
 
+    def test_add_hbtm_relation(self):
+        t = Truck.find(143)
+        t.load('garbages')
+        assert len(t().garbages) == 2
+        g = Garbage.new()
+        g().scoops = 100
+        g.save()
+        t.add(g)
+        assert len(t().garbages) == 3
+        #t.add(g)
+        #assert len(t().garbages) == 4
+
 
 def teardown_module():
     env.close()

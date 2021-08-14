@@ -471,7 +471,6 @@ class Model(object):
         Leave the funky where clause in here!
         It's to force a condition on deletes.
         '''
-        params = []
         sql = """ delete from %s where %s; """
         sql2 = sql % (tablename, where)
         return sql2
@@ -493,21 +492,21 @@ class Model(object):
         return [sql2, vals2]
 
     def add(self, entity):
-        print(type(entity))
         return self.__add_hbtm_relation(entity)
 
     def __add_hbtm_relation(self, entity):
-        '''fk = self.hbtm[m]['fk']
-        id = getattr(self.__entity_data__,
-                     self.__primary_key__)
-        joiner = self.hbtm[m]['through']
-        target_fk = self.hbtm[m]['target_fk']'''
-        print(entity.json())
+        found = 0
         if hasattr(self, 'hbtm'):
             for h in self.hbtm:
                 if self.hbtm[h]['class'] == type(entity):
                     joiner = self.hbtm[h]['through']
                     target_fk = self.hbtm[h]['target_fk']
                     fk = self.hbtm[h]['fk']
-        print(joiner, target_fk, fk)
-        return (self().id, entity().id)
+                    plural = h
+                    found = 1
+        if found:
+            sql = "INSERT INTO {0}".format(joiner)
+            sql += " (`{0}`, `{1}`) values ".format(fk, target_fk)
+            sql += "({0}, {1});".format(self().id, entity().id)
+            self.env.update(sql)
+            self.load(plural)
