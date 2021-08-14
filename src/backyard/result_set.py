@@ -23,7 +23,7 @@ class ResultSet(object):
             if m in q.has_many:
                 model = q.has_many[m]['class']
                 fk = q.has_many[m]['fk']
-                id = getattr(q(), q.__primary_key__)
+                id = getattr(q, q.__primary_key__)
                 r = model.get().where(fk+" = "+str(id)).all()
                 q.set_entity_data(m, r)
                 if m not in q.loaded_rels:
