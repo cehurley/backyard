@@ -1,2 +1,2 @@
-from . backyard import Model as Model
+from . model import Model as Model
 from . backyard import Env as Env

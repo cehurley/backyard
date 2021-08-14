@@ -1,0 +1,4 @@
+
+
+class EntityData(object):
+    pass
