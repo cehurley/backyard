@@ -1,5 +1,7 @@
 # Backyard
 
+Work in progress of a simple Python ORM for MariaDB/MySQL. Very Alpha right now.
+
 # Example Usage:
 ~~~python
 from models import User, Workflow, Runpack
