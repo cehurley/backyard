@@ -1,3 +1,8 @@
+from .user import User
+from .garbage import Garbage
+from .truck import Truck
+'''
+
 from inspect import isclass
 from pkgutil import iter_modules
 from pathlib import Path
@@ -25,8 +30,8 @@ for c in cnames:  # [Workflow, User]:
             c.belongs_to[b]['class'] = eval(c.belongs_to[b]['class'])
     if hasattr(c, 'hbtm'):
         for h in c.hbtm:
-            c.hbtm[h]['class'] = eval(
-                c.hbtm[h]['class'])
+            c.hbtm[h]['class'] = eval(c.hbtm[h]['class'])
     if hasattr(c, 'has_many'):
         for h in c.has_many:
             c.has_many[h]['class'] = eval(c.has_many[h]['class'])
+'''

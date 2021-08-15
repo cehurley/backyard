@@ -1,4 +1,4 @@
-from .models import User, Garbage, Truck
+#from .models import User, Garbage, Truck
 from backyard import Env
 from dotenv import dotenv_values
 from .pretest import usertable, garbagetable, teardown
@@ -9,10 +9,9 @@ import pymysql
 
 
 config = dotenv_values(".env")
-env = Env(config)
+env = Env
 
-for m in (User, Garbage, Truck):
-    m.bind(env)
+
 
 print('installing test data')
 
