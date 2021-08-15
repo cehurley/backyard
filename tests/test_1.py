@@ -1,13 +1,13 @@
-from .models import User, Garbage, Truck
-from backyard import Env
-from dotenv import dotenv_values
+from .models import User, Truck, Garbage
+# from backyard import Env
+# from dotenv import dotenv_values
 import json
 
-config = dotenv_values(".env")
-env = Env(config)
-
-for m in (User, Garbage, Truck):
-    m.bind(env)
+# config = dotenv_values(".env")
+# env = Env(config)
+#
+# for m in (User, Garbage, Truck):
+#     m.bind(env)
 
 
 class TestCase:
@@ -19,8 +19,8 @@ class TestCase:
 
     def test_assign_first_name(self):
         u = User.find(2)
-        u().first_name = 'sadasdasd'
-        assert u().first_name == 'sadasdasd'
+        u.first_name = 'sadasdasd'
+        assert u.first_name == 'sadasdasd'
 
     def test_load_related_data(self):
         u = User.find(1).load('garbages')
@@ -31,18 +31,18 @@ class TestCase:
 
     def test_update_related_object(self):
         u = User.find(1).load('garbages')
-        for g in u().garbages:
-            g().scoops = 99
+        for g in u.garbages:
+            g.scoops = 99
             g.save()
         j = Garbage.get().where(" scoops = 99  ").all()
         assert len(j) > 0
 
     def test_create(self):
         g = Garbage.new()
-        g().scoops = 10
-        g().boops = 'xlxlxlxlxlxlxlxlxlxl'
+        g.scoops = 10
+        g.boops = 'xlxlxlxlxlxlxlxlxlxl'
         g.save()
-        assert g().id > 0
+        assert g.id > 0
 
     def test_delete(self):
         Garbage.delete(where=" boops = 'xlxlxlxlxlxlxlxlxlxl' ")
@@ -56,13 +56,13 @@ class TestCase:
     def test_shadow(self):
         u = User.new()
         assert u.check_state()[0] == 'CLEAN'
-        u().first_name = 'asdasdasd'
+        u.first_name = 'asdasdasd'
         assert 'first_name' in u.check_state()[1].keys()
         assert u.dump_shadow()['first_name'] is None
 
     def test_state_dirty(self):
         u = User.new()
-        u().first_name = 'asdasdasd'
+        u.first_name = 'asdasdasd'
         assert u.check_state()[0] == 'DIRTY'
 
     def test_json_format(self):

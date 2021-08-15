@@ -13,7 +13,6 @@ class Model(object):
         self.__entity_data__ = None
         self.__shadow__ = {}
         self.loaded_rels = []
-        #self.env = Env
 
     @classmethod
     def bind(cls, env):
@@ -80,6 +79,7 @@ class Model(object):
     def resolve_class(self, k):
         q = self.__class__.__bases__[0]
         for i in q.__subclasses__():
+            print(i.__name__, k)
             if i.__name__ == k:
                 return i
 
@@ -181,9 +181,7 @@ class Model(object):
         for k in self.__fields__:
             self.__shadow__[k] = getattr(self, k)
         if pri:
-            setattr(self,
-                    self.__primary_key__,
-                    pri)
+            setattr(self, self.__primary_key__, pri)
 
     def dump_shadow(self):
         return self.__shadow__
@@ -328,7 +326,7 @@ class Model(object):
         found = 0
         if hasattr(self, 'hbtm'):
             for h in self.hbtm:
-                if self.hbtm[h]['class'] == type(entity):
+                if self.hbtm[h]['class'] == entity.__class__.__name__:
                     joiner = self.hbtm[h]['through']
                     target_fk = self.hbtm[h]['target_fk']
                     fk = self.hbtm[h]['fk']
@@ -337,6 +335,6 @@ class Model(object):
         if found:
             sql = "INSERT INTO {0}".format(joiner)
             sql += " (`{0}`, `{1}`) values ".format(fk, target_fk)
-            sql += "({0}, {1});".format(self().id, entity().id)
+            sql += "({0}, {1});".format(self.id, entity.id)
             self.env.update(sql)
             self.load(plural)
