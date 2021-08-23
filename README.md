@@ -3,27 +3,22 @@
 # Example Usage:
 ~~~python
 from models import User, Workflow, Runpack
-from backyard import Model
-from backyard import Env
-from dotenv import dotenv_values
 
-config = dotenv_values(".env")
-env = Env(config)
-
-for m in (User, Workflow, Runpack):
-    m.bind(env)
 
 if __name__ == '__main__':
+
     u = User.get().fields(['id','first_name','uid']).order('id asc').limit(10)
-    print('size of u: '+str(len(u)))
     for q in u:
-        q.load('workflows')
+        print(q.first_name)
         print(q.json())
 
+    u = User.find(2)
+    id = u.id
+
     u = User.find(2).load('workflows')
-    for k in u().workflows:
+    for k in u.workflows:
         k.load('runpacks')
-    print(u.xml())
+    print(u.id)
 ~~~
 
 # Models
