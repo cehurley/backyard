@@ -20,7 +20,8 @@ setup(
     python_requires=">=3.6",
     install_requires=[
         'pymysql',
-        'python-dotenv'
+        'python-dotenv',
+        'psutil'
     ],
     classifiers=[
         "Development Status :: 3 - Alpha",

@@ -1,6 +1,7 @@
 import pymysql
 import json
 
+
 class MySQLProvider(object):
     def __init__(self, config):
         self.conn = pymysql.connect(host=config['HOST'],
@@ -34,7 +35,6 @@ class MySQLProvider(object):
 
     def get_headersOLD(self, tablename):
         sql = """select * from %s limit 1""" % (tablename)
-        #data = [tablename]
         self.cursor.execute(sql)
         row_headers = [x[0] for x in self.cursor.description]
         return row_headers

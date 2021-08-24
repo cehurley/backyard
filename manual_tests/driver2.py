@@ -1,6 +1,7 @@
-from driver_models import User
+from driver_models import *
 from name_gen import get_int, get_uid, get_email
 from name_gen import FirstNameGen
+import time
 import tracemalloc
 import psutil
 import os
@@ -18,16 +19,13 @@ for i in range(10000):
 '''
 tracemalloc.start()
 print(psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2)
-
-u = User.get_bigdata().order(' first_name ').all()
-u.set_batch_size(899)
-u.debug = True
-for g in u:
-    print(g.first_name, g.uid)
-    #print(psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2)
-    #g.load('garbages')
-    #print(g.json())
+u = User.get().all()
 print(psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2)
+#u.batch_size = 10
+#for g in u:
+#print(g.first_name, g.uid)
+#g.load('garbages')
+#print(g.json())
 print(tracemalloc.get_traced_memory())
 
 tracemalloc.stop()

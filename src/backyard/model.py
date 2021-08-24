@@ -1,9 +1,11 @@
 from . hbtm_query_builder import HBTMQueryBuilder
 from . has_many_query_builder import HasManyQueryBuilder
+from . big_data_query_builder import BigDataQueryBuilder
 from . backyard import Env
-from . backyard import Registry
 from . result_set import ResultSet
+from . big_data_result_set import BigDataResultSet
 import json
+
 
 class Model(object):
     env = Env
@@ -42,18 +44,26 @@ class Model(object):
         results = cls.env.execute(sql)
         for g in results:
             r = cls()
-            #e = EntityData()
             for k in g:
                 r.set_initial_data(k, g[k])
                 setattr(r, k, g[k])
-            #r.insert_entity_data(e)
             rs.add_row(r)
         return rs
 
     @classmethod
+    def run_big_data_query_builder(cls, qb):
+        rs = BigDataResultSet(cls.__name__, cls.__tablename__, cls, qb)
+        return rs
+
+    @classmethod
+    def get_bigdata(cls):
+        qb = BigDataQueryBuilder(cls.run_big_data_query_builder)
+        qb.tablename = cls.__tablename__
+        return qb
+
+    @classmethod
     def find(cls, id):
         temp = cls()
-        #e = EntityData()
         sql = "select * from "+cls.__tablename__
         sql += " where "+cls.__primary_key__+" = %s; "
         params = [id]
@@ -61,14 +71,12 @@ class Model(object):
         for k in r:
             temp.set_initial_data(k, r[k])
             setattr(temp, k, r[k])
-        #temp.insert_entity_data(e)
         return temp
 
     @classmethod
     def new(cls, data={}):
         temp = cls()
         c = temp.load_column_names()
-        #temp.__entity_data__ = EntityData()
         for i in c:
             setattr(temp, i, None)
             temp.__shadow__[i] = None
