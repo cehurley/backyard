@@ -3,5 +3,8 @@ from dotenv import dotenv_values
 
 
 config = dotenv_values(".env")
-Env = MySQLProvider(config)
+def Env():
+    Env = MySQLProvider(config)
+    return Env
+    
 Registry = {}

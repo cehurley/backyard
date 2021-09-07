@@ -1,0 +1,31 @@
+#backyard
+
+$plumbers: innodb|utf8|utf8mb4_generic_ci
+id: int pk auto unsigned
+firstname: v-50 r
+lastname: v-50 r
+age: int default=10
+email: v-50 r
+uid: v-36 r
+created_on: ts
+updated_on: ts on_update=true
+
+$cops: innodb|utf8|utf8mb4_generic_ci
+id: int pk
+firstname: v-50 r
+lastname: v-50 r
+age: int default=10
+email: v-50 r
+uid: v-36 r
+created_on: ts
+updated_on: ts on_update=true
+
+$calls: innodb|utf8|utf8mb4_generic_ci
+id: int pk
+caller: v-50 r
+phone: v-30 r
+time: ts
+rating: f
+uid: v-36 r
+created_on: ts
+updated_on: ts
